@@ -18,6 +18,9 @@ namespace SkipList
 
         public Node(T value)
         : this(value, null, null, 1) { }
+
+        public Node(T value, int height)
+        : this(value, null, null, height) { }
         
     }
 }
