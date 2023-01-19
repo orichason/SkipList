@@ -10,7 +10,9 @@ namespace SkipList
 
             SkipList<int> List = new SkipList<int>(random);
 
+           
             List.Insert(5);
+            ;
         }
     }
 }

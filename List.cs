@@ -11,7 +11,7 @@ namespace SkipList
 
         public SkipList(Random random)
         {
-            head = new Node<T>(default, null, null, 2);
+            head = new Node<T>(default);
             this.random = random;
 
         }
@@ -27,46 +27,49 @@ namespace SkipList
             //make sure height isnt greater than heads height
             //adjust heads height and add node if needed
 
-            Node<T> newNode = new Node<T>(value);
+            Node<T> addingNode = new Node<T>(value);
+            int height = 1;
 
-            while (GetRandomHeight() != 2 && newNode.Height <= head.Height)
+            while (GetRandomHeight() != 2)
             {
-                newNode.Height++;
-                if(newNode.Height.CompareTo(head.Height) > 0)
+                Node<T> newNode = new Node<T>(value, ++height);
+                newNode.Below = addingNode;
+                addingNode = newNode;
+                if (addingNode.Height.CompareTo(head.Height) > 0)
                 {
-                    head.Height++;
-                    head.Below = new Node<T>(default);
+                    Node<T> newHead = new Node<T>(default, head.Height + 1);
+                    newHead.Below = head;
+                    head = newHead;
+                    break;
                 }
-                newNode.Below = new Node<T>(value, newNode.Height - 1);
             }
-
-            if (newNode.Height <= head.Height)
-            {
-
-            }
-
-
 
             Node<T> current = head;
-            Node<T> parent = head;
 
-            while (current.Right != null || current.Right.Value.CompareTo(value) > 0)
+            while (current != null)
             {
-                current = current.Right;
-
-                if (value.CompareTo(current.Right.Value) <= 0)
+                if (current.Right == null)
                 {
+                    current.Right = addingNode;
+                    addingNode = addingNode.Below;
                     current = current.Below;
-                    parent.Right = newNode;
-                    newNode.Right = current;
-                    return;
                 }
+                else
+                {
+                    if (current.Right.Value.CompareTo(addingNode.Value) > 0)
+                    {
+                        current.Right = addingNode;
+                        addingNode = addingNode.Below;
+                        current = current.Below;
+                    }
 
-                current = current.Right;
-                parent = parent.Right;
+                    else
+                    {
+                        current = current.Below;
+                    
+                    }
+                }
             }
-
-            parent.Right = newNode;
         }
 
     }
